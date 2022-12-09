@@ -3,6 +3,7 @@ package com.bridgelabz;
 import java.util.Scanner;
 
 public class TicTacToeGame {
+    static char board[] = new char[10];
     static char playerLetter;
     static char computerLetter;
     /*
@@ -32,11 +33,24 @@ public class TicTacToeGame {
     }
 
     /**
+     * This is method is using for display the board of tic-tac-toe game
+     */
+    public static void toDisplayBoard() {
+
+        System.out.println(board[1] + "|" + board[2] + "|" + board[3]);
+        System.out.println("------");
+        System.out.println(board[4] + "|" + board[5] + "|" + board[6]);
+        System.out.println("------");
+        System.out.println(board[7] + "|" + board[8] + "|" + board[9]);
+    }
+
+    /**
      *This is Main Method is Used for calling the static method gameBoard
      */
     public static void main(String[] args) {
         System.out.println("Welcome To Tic-Tac-Toe Game");
         gameBoard();
         chooseLetter();
+        toDisplayBoard();
     }
 }

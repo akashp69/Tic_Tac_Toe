@@ -13,10 +13,11 @@ public class TicTacToeGame {
 
         char[] board = new char[10];
         for (int i = 1; i < board.length; i++) {
-            System.out.print(board[i] + " ");
+           board[i]=' ';
         }
     }
-    /*
+
+    /**
      * This Is static method is used for chose the letter
      */
     public static void chooseLetter() {
@@ -43,6 +44,26 @@ public class TicTacToeGame {
         System.out.println("------");
         System.out.println(board[7] + "|" + board[8] + "|" + board[9]);
     }
+    public static void toMakeAMove() {
+        /*
+        UC4->To make A move
+        used if else condition
+        */
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Choose your location 1 - 9 ");
+        int position = scanner.nextInt();
+        if (position <= 9 && position >= 1) {
+            board[position] = playerLetter;
+            toDisplayBoard();
+            toMakeAMove();
+        } else if (board[position] != ' ') {
+            System.err.println("You already choose");
+            toMakeAMove();
+        } else {
+            System.err.println("Enter location between 1 to 9");
+            toMakeAMove();
+        }
+    }
 
     /**
      *This is Main Method is Used for calling the static method gameBoard
@@ -52,5 +73,6 @@ public class TicTacToeGame {
         gameBoard();
         chooseLetter();
         toDisplayBoard();
+        toMakeAMove();
     }
 }

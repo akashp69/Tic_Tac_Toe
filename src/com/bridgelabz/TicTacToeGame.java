@@ -6,7 +6,7 @@ public class TicTacToeGame {
     static char board[] = new char[10];
     static char playerLetter;
     static char computerLetter;
-    /*
+    /**
     *This is static Method Used for create empty  tic-tac-toe board
     */
     public static void gameBoard() {
@@ -44,11 +44,12 @@ public class TicTacToeGame {
         System.out.println("------");
         System.out.println(board[7] + "|" + board[8] + "|" + board[9]);
     }
+
+    /**
+     * This method is using for check free space before move
+     */
     public static void toMakeAMove() {
-        /*
-        UC4->To make A move
-        used if else condition
-        */
+
         Scanner scanner = new Scanner(System.in);
         System.out.println("Choose your location 1 - 9 ");
         int position = scanner.nextInt();
@@ -66,7 +67,7 @@ public class TicTacToeGame {
     }
 
     /**
-     *This is Main Method is Used for calling the static method gameBoard
+     *This is Main Method is Used for calling the static method
      */
     public static void main(String[] args) {
         System.out.println("Welcome To Tic-Tac-Toe Game");

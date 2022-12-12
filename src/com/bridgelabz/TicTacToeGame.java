@@ -6,126 +6,210 @@ public class TicTacToeGame {
     /**
     *Using the static variables for chose the player
     */
-    static char board[] = new char[10];
-    static char playerLetter;
-    static char computerLetter;
+
+    private static final Scanner scanner=new Scanner(System.in);
+    private char board[]=new char[10];
+    private char usersymbol,computersymbol;
+    private int player = 0;
+    private char emptyspace = ' ';
+
+    TicTacToeGame(){
+        /**
+         * inside the constructor calling createboard method.
+         * making toss to start play---it'll decide who will play first.
+         * calling takeUserInput method
+         */
+
+        createBoard();
+        tossForFirstPlay();
+        takeUserInput();
+    }
+
     /**
-     *This is static method is used for create the empty tic-tac-toe game board using array
+     * created a method named createboard.
+     * it will iterate this forloop from 1 to 10.
+     * Board valus assigned empty space.
      */
+    private void createBoard(){
+        for(int count=1;count<10;count++){
+            board[count]=' ';
+        }
+    }
 
-    public static void gameBoard() {
-
-        for (int i = 1; i < board.length; i++) {
-            board[i] = ' ';
+    /**
+     * It'll take user input 'x' and '0'.
+     * Compare those to assign the values whether it's computersymbol or usersymbol.
+     */
+    private void takeUserInput(){
+        System.out.println("Your turn:(Choose x or o) ");
+        String symbol=scanner.next();
+        if (symbol.equals("x")){
+            usersymbol= 'x';
+            computersymbol='o';
+        }else if (symbol.equals("o")){
+            usersymbol='o';
+            computersymbol='x';
+        }else{
+            System.out.println("invalid option");
         }
     }
     /**
-     *This is static method is used for chose the letter for player
+     * this showBoard method is showing the empty board of 3*3 matrices.
+     * inside this board it'll take the board values assigned empty space.
      */
-    public static void chooseLetter() {
-        System.out.println("\nChoose your Letter X or O");
-        Scanner scanner = new Scanner(System.in);
-        playerLetter = scanner.next().toUpperCase().charAt(0);
-        if (playerLetter == 'X') {
-            System.out.println(playerLetter);
+
+    private void showBoard(){
+        String horizontalPart = "+---+---+---+";
+        for (int row = 0; row < 3; row++) {
+            System.out.println(horizontalPart);
+            for (int coloumn = 1; coloumn < 4; coloumn++) {
+                System.out.print("| " + board[row * 3 + coloumn] + " ");
+            }
+            System.out.print("|\n");
+        }
+        System.out.print(horizontalPart);
+        System.out.print("\n");
+    }
+    /**
+     * this makeMove method will take user input from 1 to 9 place your move on the given input.
+     * if player==0 then it'll assign the value as given by computer.
+     */
+    public boolean makeMove(int index, int player) {
+        if (board[index] == ' ') {
+            if (player == 0) {
+                System.out.println("Computer played: ");
+                board[index] = computersymbol;
+            } else {
+                System.out.println("Player played: ");
+                board[index] = usersymbol;
+            }
+            showBoard();
+            checkWin();
+            return false;
         } else {
-            System.out.println(computerLetter == 'O');
+            return true;
         }
     }
     /**
-     *This is static method is used for Showing empty tic-tac-toe game board
+     * this tossForFirstPlay method will get the input from user and check whether it's a head or tail by using random function
      */
-    public static void toDisplayBoard() {
-        System.out.println(board[1] + " | " + board[2] + " | " + board[3]);
-        System.out.println("----------");
-        System.out.println(board[4] + " | " + board[5] + " | " + board[6]);
-        System.out.println("----------");
-        System.out.println(board[7] + " | " + board[8] + " | " + board[9]);
-    }
-    /**
-     *This is static method is used for take a move on empty space
-     */
-    public static void toMakeAMove() {
-        Scanner scanner = new Scanner(System.in);
-        System.out.println("Choose your number between 1 to 9 ");
-        int position = scanner.nextInt();
-        if (position <= 9 && position >= 1) {
-            board[position] = playerLetter;
-            toDisplayBoard();
-            checkFreeSpace();
-            decideWinner();
-            toMakeAMove();
-
-        } else if (board[position] != ' ') {
-            System.err.println("You already choose");
-            toMakeAMove();
+    public void tossForFirstPlay() {
+        int player;
+        Scanner scanner=new Scanner(System.in);
+        System.out.println("Enter Toss (H or T):");
+        String toss=scanner.next();
+        int i = (int) Math.round(Math.random()) % 2;
+        if ((i == 1 && toss.equals("H")) || (i == 0 && toss.equals("T"))) {
+            System.out.println("Congratulations! You've won the Toss.");
+            player = 1;
         } else {
-            System.err.println("Enter location between 1 to 9");
-            toMakeAMove();
+            System.out.println("You've lost Toss. Computer plays first.");
+            player = 0;
         }
     }
-    /**
-     *This is static method is used for to decide who plays first
-     */
-    public static void Toss() {
-        int Toss = (int) Math.floor(Math.random() * 10) % 2 + 1;
-        switch (Toss) {
-            case 1:
-                System.out.println("You Won the Toss Play First");
-                break;
-            default:
-                System.out.println("Opponent Won The Toss");
-        }
-    }
-    /**
-     *This is static method is used for check a free space is available for  a move
-     */
-    public static void checkFreeSpace() {
-        boolean spaceAvailable = false;
-        int freeSpace = 0;
-        for (int i = 1; i < board.length; i++) {
-            if ((board[i] == ' ')) {
-                spaceAvailable = true;
-                freeSpace++;
+    public void playGame() {
+        int index;
+        for (index = 0; index < 9; index++) {
+            if (player == 0) {
+                computerPlay();
+                player = 1;
+            } else {
+                checkUserCanWin();
+                System.out.println("Select Position (1-9): ");
+                while (makeMove(scanner.nextInt(), player)) {
+                    System.out.println("Try different place.");
+                }
+                player = 0;
             }
         }
-        if (spaceAvailable == false) {
-            System.err.println("Board is full");
+        if (index == 9) {
+            System.out.println("Game Draw!");
             System.exit(0);
-        } else {
-            System.out.println("You have " + freeSpace + " moves left");
         }
     }
-    /**
-     *This is static method is used for check letters filled vertical and horizontal for win
-     */
-    public static void decideWinner() {
 
-        if ((board[1] == playerLetter && board[2] == playerLetter && board[3] == playerLetter) ||
-                (board[4] == playerLetter && board[5] == playerLetter && board[6] == playerLetter) ||
-                (board[7] == playerLetter && board[8] == playerLetter && board[9] == playerLetter) ||
-                (board[1] == playerLetter && board[5] == playerLetter && board[9] == playerLetter) ||
-                (board[3] == playerLetter && board[5] == playerLetter && board[7] == playerLetter) ||
-                (board[1] == playerLetter && board[4] == playerLetter && board[7] == playerLetter) ||
-                (board[2] == playerLetter && board[5] == playerLetter && board[7] == playerLetter) ||
-                (board[3] == playerLetter && board[6] == playerLetter && board[9] == playerLetter)) {
-            toDisplayBoard();
-            System.out.println("YOU WON THE GAME");
+    /**
+     * this checkWin method will check all the possible winning chances...
+     */
+    public void checkWin() {
+        if ((board[1] == usersymbol && board[2] == usersymbol && board[3] == usersymbol) ||
+                (board[4] == usersymbol && board[5] == usersymbol && board[6] == usersymbol) ||
+                (board[7] == usersymbol && board[8] == usersymbol && board[9] == usersymbol) ||
+                (board[1] == usersymbol && board[4] == usersymbol && board[7] == usersymbol) ||
+                (board[2] == usersymbol && board[5] == usersymbol && board[8] == usersymbol) ||
+                (board[3] == usersymbol && board[6] == usersymbol && board[9] == usersymbol) ||
+                (board[1] == usersymbol && board[5] == usersymbol && board[9] == usersymbol) ||
+                (board[3] == usersymbol && board[5] == usersymbol && board[7] == usersymbol)) {
+            System.out.println("Player Wins!");
             System.exit(0);
         }
 
+        if ((board[1] == computersymbol && board[2] == computersymbol && board[3] == computersymbol) ||
+                (board[4] == computersymbol && board[5] == computersymbol && board[6] == computersymbol) ||
+                (board[7] == computersymbol && board[8] == computersymbol && board[9] == computersymbol) ||
+                (board[1] == computersymbol && board[4] == computersymbol && board[7] == computersymbol) ||
+                (board[2] == computersymbol && board[5] == computersymbol && board[8] == computersymbol) ||
+                (board[3] == computersymbol && board[6] == computersymbol && board[9] == computersymbol) ||
+                (board[1] == computersymbol && board[5] == computersymbol && board[9] == computersymbol) ||
+                (board[3] == computersymbol && board[5] == computersymbol && board[7] == computersymbol)) {
+            System.out.println("Player Lost!");
+            System.exit(0);
+        }
+
+    }
+
+    /**
+     * This method is created for computer playing game
+     */
+
+    private void computerPlay() {
+        while (makeMove((int) (Math.random() * 8) + 1, 0)) {
+            System.out.println("");
+        }
     }
     /**
-     *This is Main method is used for Calling the static methods
+     * this checkusercanwin will fetch all possibilities.
+     * then conclude the result as player can win from computer
      */
-    public static void main(String[] args) {
-        System.out.println("-----Welcome To Tic-Tac-Toe Game-----");
-        System.out.println("Toss a Coin for chose who play first-------");
-        Toss();
-        gameBoard();
-        chooseLetter();
-        toDisplayBoard();
-        toMakeAMove();
+    private void checkUserCanWin() {
+        if ((board[1] == usersymbol && board[2] == usersymbol && board[3] == emptyspace) ||
+                (board[4] == usersymbol && board[5] == usersymbol && board[6] == emptyspace) ||
+                (board[7] == usersymbol && board[8] == usersymbol && board[9] == emptyspace) ||
+                (board[1] == usersymbol && board[4] == usersymbol && board[7] == emptyspace) ||
+                (board[2] == usersymbol && board[5] == usersymbol && board[8] == emptyspace) ||
+                (board[3] == usersymbol && board[6] == usersymbol && board[9] == emptyspace) ||
+                (board[1] == usersymbol && board[5] == usersymbol && board[9] == emptyspace) ||
+                (board[3] == usersymbol && board[5] == usersymbol && board[7] == emptyspace) ||
+                (board[1] == emptyspace && board[2] == usersymbol && board[3] == usersymbol) ||
+                (board[4] == emptyspace && board[5] == usersymbol && board[6] == usersymbol) ||
+                (board[7] == emptyspace && board[8] == usersymbol && board[9] == usersymbol) ||
+                (board[1] == emptyspace && board[4] == usersymbol && board[7] == usersymbol) ||
+                (board[2] == emptyspace && board[5] == usersymbol && board[8] == usersymbol) ||
+                (board[3] == emptyspace && board[6] == usersymbol && board[9] == usersymbol) ||
+                (board[1] == emptyspace && board[5] == usersymbol && board[9] == usersymbol) ||
+                (board[3] == emptyspace && board[5] == usersymbol && board[7] == usersymbol) ||
+                (board[1] == usersymbol && board[2] == emptyspace && board[3] == usersymbol) ||
+                (board[4] == usersymbol && board[5] == emptyspace && board[6] == usersymbol) ||
+                (board[7] == usersymbol && board[8] == emptyspace && board[9] == usersymbol) ||
+                (board[1] == usersymbol && board[4] == emptyspace && board[7] == usersymbol) ||
+                (board[2] == usersymbol && board[5] == emptyspace && board[8] == usersymbol) ||
+                (board[3] == usersymbol && board[6] == emptyspace && board[9] == usersymbol) ||
+                (board[1] == usersymbol && board[5] == emptyspace && board[9] == usersymbol) ||
+                (board[3] == usersymbol && board[5] == emptyspace && board[7] == usersymbol)){
+            System.out.println("Player can Win! from Computer");
+        }
+
     }
+
+    /**
+     * This is the main method Used  to execute the program.
+     * an object got created named tictactoe which called the methods
+     */
+    public static void main(String[]args){
+        TicTacToeGame tictactoe=new TicTacToeGame();
+        tictactoe.showBoard();
+        tictactoe.playGame();
+
+    }
+
 }
-
